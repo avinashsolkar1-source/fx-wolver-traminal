@@ -19,7 +19,7 @@
         }
         const seen = new Set(); return out.filter((c) => (seen.has(c.t) ? false : (seen.add(c.t), true)));
       } },
-    twelvedata: { name: 'Yahoo Finance (free, via Supabase Edge Function)', markets: ['forex', 'metals', 'indices', 'stocks'], key: false,
+    yahoo: { name: 'Yahoo Finance (free, via Supabase Edge Function)', markets: ['forex', 'metals', 'indices', 'stocks'], key: false,
       intervals: { '1m': '1min', '5m': '5min', '15m': '15min', '30m': '30min', '1h': '1h', '4h': '4h', '1d': '1day', '1w': '1week', '1mo': '1month' },
       map(sym) { const idx = { US30: 'DJI', NAS100: 'IXIC', SPX500: 'SPX', GER40: 'DAX', UK100: 'FTSE' }; if (idx[sym]) return idx[sym]; if (/^[A-Z]{6}$/.test(sym)) return sym.slice(0, 3) + '/' + sym.slice(3); return sym; },
       async fetch(o, onProgress) {
@@ -27,7 +27,7 @@
         const z = (d) => d.toISOString().slice(0, 19).replace('T', ' '); let out = [], start = o.from; const step = F.TF[o.tf];
         while (start < o.to) {
           const { data, error } = await F.DB.sb.functions.invoke('market-data', { body: { symbol: this.map(o.symbol), interval: this.intervals[o.tf], start: z(new Date(start * 1000)), end: z(new Date(o.to * 1000)) } });
-          if (error) throw new Error('market-data function error: ' + (error.message || error) + ' — is the function deployed and the secret set?'); if (data && data.error) throw new Error(data.error);
+          if (error) throw new Error('market-data function error: ' + (error.message || error) + ' — is the function deployed and are you signed in?'); if (data && data.error) throw new Error(data.error);
           const v = (data && data.values) || []; if (!v.length) break;
           for (const r of v) { const t = Math.floor(Date.parse(r.datetime.length <= 10 ? r.datetime + 'T00:00:00Z' : r.datetime.replace(' ', 'T') + 'Z') / 1000); if (t >= o.from && t <= o.to) out.push({ t, o: +r.open, h: +r.high, l: +r.low, c: +r.close, v: +(r.volume || 0) }); }
           const last = out.length ? out[out.length - 1].t : start; if (v.length < 5000 || last <= start) break; start = last + step; if (onProgress) onProgress(Math.min(1, (start - o.from) / (o.to - o.from)), out.length);
