@@ -20,6 +20,7 @@ const INTERVALS: Record<string, { yahoo: string; maxAge: number }> = {
 };
 const SYMBOLS: Record<string, string> = {
   DJI: "^DJI", IXIC: "^IXIC", SPX: "^GSPC", DAX: "^GDAXI", FTSE: "^FTSE",
+  NIFTY50: "^NSEI", SENSEX: "^BSESN", JPN225: "^N225", HKG50: "^HSI", EU50: "^STOXX50E",
   "XAU/USD": "GC=F", "XAG/USD": "SI=F", "XPT/USD": "PL=F", "XPD/USD": "PA=F",
 };
 function yahooSymbol(input: string): string {
