@@ -50,7 +50,7 @@
     (async () => {
       const box = q('#lib'); if (!box) return; let list = [];
       try { const r = await fetch('data/manifest.json', { cache: 'no-store' }); if (r.ok) list = ((await r.json()).datasets || []).filter((d) => d && d.file && d.symbol && d.tf && F.TF[d.tf]); } catch (e) { list = []; }
-      if (!list.length) { box.innerHTML = '<div class="hint" style="margin:6px 0 10px">Data Library is empty. Add CSV files to the <code>data/</code> folder and list them in <code>data/manifest.json</code>; they will appear here with a one-click Load button.</div>'; return; }
+      if (!list.length) { box.innerHTML = '<div class="hint" style="margin:6px 0 10px">Shared market library and CSV imports appear here. Choose a public starter dataset below or import your own CSV.</div>'; return; }
       box.innerHTML = '<h3 style="margin:10px 0 8px">Data Library</h3><div class="grid g3 keep1" style="gap:8px;margin-bottom:12px">' + list.map((d, i) => `<div class="card" style="padding:10px"><b>${esc(d.name || d.symbol + ' ' + d.tf)}</b><div class="mut" style="font-size:12px;margin:2px 0 8px">${esc(d.symbol)} \u00B7 ${esc(d.tf)} \u00B7 ${esc(d.source || 'library')}</div><button class="btn sm pri" data-lib="${i}" type="button">Load & use</button></div>`).join('') + '</div><div id="libmsg"></div>';
       $$('[data-lib]', box).forEach((b) => (b.onclick = async () => {
         const d = list[+b.dataset.lib], m = $('#libmsg', box); b.disabled = true; m.innerHTML = U.loading('Loading ' + d.file + '\u2026');
