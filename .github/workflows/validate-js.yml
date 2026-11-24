@@ -1,0 +1,31 @@
+name: Validate FX WOLVER JavaScript
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker.js'
+      - 'public/backtest/js/**'
+      - '.github/workflows/validate-js.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'worker.js'
+      - 'public/backtest/js/**'
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in worker.js public/backtest/js/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
