@@ -39,8 +39,8 @@ function isoUtc(seconds: number): string {
   return new Date(seconds * 1000).toISOString().slice(0, 19).replace("T", " ");
 }
 const cache = new Map<string, { at: number; values: unknown[] }>();
-async function getChart(symbol: string, interval: string, start: number, end: number) {
-  const key = [symbol, interval, start, end].join("|");
+async function getChart(symbol: string, yahooInterval: string, requestedInterval: string, start: number, end: number) {
+  const key = [symbol, yahooInterval, requestedInterval, start, end].join("|");
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < 30_000) return hit.values;
   let lastError = "Upstream unavailable";
@@ -48,7 +48,7 @@ async function getChart(symbol: string, interval: string, start: number, end: nu
     try {
       const url = new URL(`https://${host}/v8/finance/chart/${encodeURIComponent(symbol)}`);
       url.search = new URLSearchParams({
-        period1: String(start), period2: String(end), interval,
+        period1: String(start), period2: String(end), interval: yahooInterval,
         events: "div,splits", includeAdjustedClose: "true",
       }).toString();
       const response = await fetch(url, {
@@ -72,7 +72,7 @@ async function getChart(symbol: string, interval: string, start: number, end: nu
           low: Number(low), close: Number(close), volume: Number(q.volume?.[i] || 0),
         }];
       });
-      if (interval === "4h") {
+      if (requestedInterval === "4h") {
         const buckets = new Map<number, any>();
         for (const row of values) {
           const t = Math.floor(parseUtc(row.datetime) / 14400) * 14400;
@@ -118,7 +118,7 @@ Deno.serve(async (req: Request) => {
       const days = Math.floor(spec.maxAge / 86400);
       throw new Error(`Free Yahoo history for ${body.interval} is limited to about ${days} days. Choose a recent date range or import older candles from CSV.`);
     }
-    const values = await getChart(symbol, body.interval, start, Math.min(end, now + 60));
+    const values = await getChart(symbol, spec.yahoo, body.interval, start, Math.min(end, now + 60));
     return Response.json({ values, source: "Yahoo Finance", history_limit_days: Math.floor(spec.maxAge / 86400) }, { headers: { ...cors, "Cache-Control": "private, max-age=20" } });
   } catch (error) {
     return Response.json({ error: String((error as Error)?.message || error) }, { status: 400, headers: cors });
