@@ -49,6 +49,12 @@
     if (DB.mode === 'local') return L.list(t, f);
     let all = [], from = 0; const step = 1000;
     for (;;) { let q = DB.sb.from(tn(t)).select('data').range(from, from + step - 1); if (f && f.session_id) q = q.eq('session_id', f.session_id); const { data, error } = await q; if (error) throw new Error(error.message); all = all.concat(data.map((r) => r.data)); if (data.length < step) break; from += step; }
+    if (t === 'datasets') {
+      const { data, error } = await DB.sb.from('market_datasets').select('id,symbol,market,tf,tf_sec,rows,from_ts,to_ts,source,is_public,created_at').eq('is_public', true).order('market').order('symbol');
+      if (error) throw new Error('Shared market library: ' + error.message);
+      const ownIds = new Set(all.map((x) => x.id));
+      for (const x of (data || [])) if (!ownIds.has(x.id)) all.push({ id: x.id, symbol: x.symbol, market: x.market, tf: x.tf, tfSec: x.tf_sec, rows: x.rows, from: Number(x.from_ts), to: Number(x.to_ts), source: x.source, is_public: true, imported_at: x.created_at });
+    }
     return all;
   };
   DB.get = async function (t, id) {
@@ -86,6 +92,11 @@
     if (rec) { const a = new Float64Array(rec.buf); out = new Array(rec.n); for (let i = 0; i < rec.n; i++) { const j = i * 6; out[i] = { t: a[j], o: a[j + 1], h: a[j + 2], l: a[j + 3], c: a[j + 4], v: a[j + 5] }; } }
     else if (DB.mode === 'cloud') {
       out = []; for (let k = 0; ; k++) { const { data, error } = await DB.sb.from('bt_dataset_chunks').select('data').eq('dataset_id', dsId).eq('idx', k).maybeSingle(); if (error) throw new Error(error.message); if (!data) break; for (const r of data.data) out.push({ t: r[0], o: r[1], h: r[2], l: r[3], c: r[4], v: r[5] }); }
+      if (!out.length) {
+        const { data, error } = await DB.sb.from('market_dataset_chunks').select('data').eq('dataset_id', dsId).order('idx');
+        if (error) throw new Error('Shared market data: ' + error.message);
+        for (const chunk of (data || [])) for (const r of chunk.data) out.push({ t: r[0], o: r[1], h: r[2], l: r[3], c: r[4], v: r[5] });
+      }
       if (out.length) await DB.saveCandlesLocalOnly(dsId, out);
     }
     if (!out || !out.length) throw new Error('No candles found for this dataset. Re-import it from the Market Data page.');
