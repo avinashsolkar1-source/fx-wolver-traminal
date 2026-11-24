@@ -48,13 +48,21 @@
   A.bindDataCard = function (el) {
     const q = (i) => $(i, el); if (!q('#dl')) return;
     (async () => {
-      const box = q('#lib'); if (!box) return; let list = [];
-      try { const r = await fetch('data/manifest.json', { cache: 'no-store' }); if (r.ok) list = ((await r.json()).datasets || []).filter((d) => d && d.file && d.symbol && d.tf && F.TF[d.tf]); } catch (e) { list = []; }
-      if (!list.length) { box.innerHTML = '<div class="hint" style="margin:6px 0 10px">Shared market library and CSV imports appear here. Choose a public starter dataset below or import your own CSV.</div>'; return; }
-      box.innerHTML = '<h3 style="margin:10px 0 8px">Data Library</h3><div class="grid g3 keep1" style="gap:8px;margin-bottom:12px">' + list.map((d, i) => `<div class="card" style="padding:10px"><b>${esc(d.name || d.symbol + ' ' + d.tf)}</b><div class="mut" style="font-size:12px;margin:2px 0 8px">${esc(d.symbol)} \u00B7 ${esc(d.tf)} \u00B7 ${esc(d.source || 'library')}</div><button class="btn sm pri" data-lib="${i}" type="button">Load & use</button></div>`).join('') + '</div><div id="libmsg"></div>';
+      const box = q('#lib'); if (!box) return; let csvList = [], sharedList = [];
+      try { const r = await fetch('data/manifest.json', { cache: 'no-store' }); if (r.ok) csvList = ((await r.json()).datasets || []).filter((d) => d && d.file && d.symbol && d.tf && F.TF[d.tf]); } catch (e) { csvList = []; }
+      try { sharedList = (await DB.list('datasets')).filter((d) => d.is_public); } catch (e) { sharedList = []; }
+      const list = sharedList.map((d) => ({ ...d, shared: true, name: d.symbol + ' ' + d.tf, source: d.source || 'Shared market library' })).concat(csvList.map((d) => ({ ...d, shared: false })));
+      if (!list.length) { box.innerHTML = '<div class="hint" style="margin:6px 0 10px">No shared datasets are available yet. Download real candles or import your own CSV below.</div>'; return; }
+      box.innerHTML = '<h3 style="margin:10px 0 8px">Market Data Library</h3><div class="grid g3 keep1" style="gap:8px;margin-bottom:12px">' + list.map((d, i) => `<div class="card" style="padding:10px"><b>${esc(d.name || d.symbol + ' ' + d.tf)}</b><div class="mut" style="font-size:12px;margin:2px 0 8px">${esc(d.symbol)} · ${esc(d.tf)} · ${esc(d.source || 'library')}</div>${d.shared ? '<span class="tag">Shared · 5y daily</span>' : ''}<button class="btn sm pri" data-lib="${i}" type="button" style="margin-top:8px">Load & use</button></div>`).join('') + '</div><div id="libmsg"></div>';
       $$('[data-lib]', box).forEach((b) => (b.onclick = async () => {
-        const d = list[+b.dataset.lib], m = $('#libmsg', box); b.disabled = true; m.innerHTML = U.loading('Loading ' + d.file + '\u2026');
+        const d = list[+b.dataset.lib], m = $('#libmsg', box); b.disabled = true; m.innerHTML = U.loading('Loading ' + d.symbol + ' ' + d.tf + '…');
         try {
+          if (d.shared) {
+            const cs = await DB.loadCandles(d.id);
+            if (cs.length < 200) throw new Error('Shared dataset has fewer than 200 candles.');
+            U.toast(d.symbol + ' ' + d.tf + ': ' + cs.length.toLocaleString() + ' shared candles ready');
+            A.pendingSel = { market: d.market, symbol: d.symbol, ds: d.id }; A.route(); return;
+          }
           const r = await fetch('data/' + encodeURIComponent(d.file).replace(/%2F/g, '/')); if (!r.ok) throw new Error('File data/' + d.file + ' not found (HTTP ' + r.status + ').');
           const pr = F.parseCSV(await r.text(), { tz: d.tz_offset_minutes || 0 }), cs = pr.candles; if (cs.length < 200) throw new Error('Only ' + cs.length + ' valid candles found; at least 200 are needed.');
           const mk = d.market || 'forex', sec = F.TF[d.tf], all = await DB.list('datasets'), same = all.find((x) => x.symbol === d.symbol && x.market === mk && x.tfSec === sec), id = same ? same.id : F.uid(), qq = F.dataQuality(cs, sec, mk);
@@ -63,9 +71,21 @@
           U.toast(d.symbol + ' ' + d.tf + ': ' + cs.length.toLocaleString() + ' candles ready'); A.pendingSel = { market: mk, symbol: d.symbol, ds: id }; A.route();
         } catch (er) { m.innerHTML = `<div class="alert err">${esc(er.message)}</div>`; b.disabled = false; }
       }));
-    })(); const fill = () => { const m = q('#dm').value; q('#ds2').innerHTML = (F.MARKETS[m] || []).map((x) => `<option>${x}</option>`).join(''); q('#dsrc').textContent = m === 'crypto' ? 'Binance public API (free)' : 'Yahoo Finance via Supabase (free)'; est(); };
+    })();
+    const setRange = () => {
+      const market = q('#dm').value, tf = q('#dt2').value;
+      let days = 31;
+      if (tf === '1m') days = 5;
+      else if (['5m', '15m', '30m'].includes(tf)) days = market === 'crypto' ? 180 : 31;
+      else if (['1h', '4h'].includes(tf)) days = 730;
+      else if (tf === '1d') days = 1826;
+      const to = new Date(), from = new Date(Date.now() - days * 864e5);
+      q('#dto').value = to.toISOString().slice(0, 10); q('#dfr').value = from.toISOString().slice(0, 10);
+    };
     const est = () => { const tf = q('#dt2').value, d = (Date.parse(q('#dto').value) - Date.parse(q('#dfr').value)) / 1000; const n = d > 0 ? Math.round(d / F.TF[tf] * (q('#dm').value === 'crypto' ? 1 : 5 / 7)) : 0; q('#dest').textContent = n ? `≈ ${n.toLocaleString()} candles${n > 400000 ? ' — too many, shorten the range' : ''}` : ''; };
-    ['#dm'].forEach((i) => (q(i).onchange = fill)); ['#dt2', '#dfr', '#dto'].forEach((i) => (q(i).onchange = est)); fill(); q('#tvb').onclick = A.tvModal;
+    const fill = () => { const m = q('#dm').value; q('#ds2').innerHTML = (F.MARKETS[m] || []).map((x) => `<option>${x}</option>`).join(''); q('#dsrc').textContent = m === 'crypto' ? 'Binance public API (free)' : 'Yahoo Finance via Supabase (free)'; setRange(); est(); };
+    q('#dm').onchange = fill; q('#dt2').onchange = () => { setRange(); est(); }; q('#dfr').onchange = q('#dto').onchange = est;
+    fill(); q('#tvb').onclick = A.tvModal;
     q('#dgo').onclick = async () => {
       const b = q('#dgo'), m = q('#dmsg'), mk = q('#dm').value, sym = q('#ds2').value, tf = q('#dt2').value, from = Date.parse(q('#dfr').value) / 1000, to = Date.parse(q('#dto').value) / 1000 + 86399;
       if (!(to > from)) return (m.innerHTML = '<div class="alert err">Invalid date range (From must be before To).</div>');
@@ -74,7 +94,7 @@
       try {
         const cs = await F.providers[PROV(mk)].fetch({ symbol: sym, tf, from, to }, (p, n) => { if (prog) prog.textContent = `Download… ${Math.round(p * 100)}% (${n.toLocaleString()} candles)`; });
         if (cs.length < 200) throw new Error(`Only ${cs.length} candles found — at least 200 are required for a backtest. Extend the range.`);
-        const sec = F.TF[tf], all = await DB.list('datasets'), same = all.find((d) => d.symbol === sym && d.market === mk && d.tfSec === sec); let merged = cs;
+        const sec = F.TF[tf], all = await DB.list('datasets'), same = all.find((d) => !d.is_public && d.symbol === sym && d.market === mk && d.tfSec === sec); let merged = cs;
         if (same) { const old = await DB.loadCandles(same.id), map = new Map(old.map((c) => [c.t, c])); cs.forEach((c) => map.set(c.t, c)); merged = Array.from(map.values()).sort((a, b) => a.t - b.t); }
         const id = same ? same.id : F.uid(), qq = F.dataQuality(merged, sec, mk), src = mk === 'crypto' ? 'Binance public API' : 'Yahoo Finance (Supabase Edge Function)';
         await DB.put('datasets', { id, symbol: sym, market: mk, tf, tfSec: sec, rows: merged.length, from: merged[0].t, to: merged[merged.length - 1].t, source: src, quality: { gaps: qq.gaps, missing: qq.missing }, imported_at: new Date().toISOString() }); await DB.saveCandles(id, merged);
@@ -83,6 +103,7 @@
       } catch (er) { m.innerHTML = `<div class="alert err">${esc(er.message)}</div>`; b.disabled = false; }
     };
   };
+
   F.pages.new = async function (el) {
     const [dsAll, strats, props, S] = await Promise.all([DB.list('datasets'), DB.list('strategies'), DB.list('prop_configs'), A.settingsGet()]), strat = strats.filter((s) => s.kind !== 'pattern');
     if (!dsAll.length) { el.innerHTML = `<div class="pagehead"><div><h1>New Backtest</h1><p>Load your real historical data first, then start the backtest.</p></div></div>${A.dataCard(el, dsAll, S)}`; A.bindDataCard(el); return; }
