@@ -1,6 +1,7 @@
 name = "fx-wolver-traminal"
 main = "./worker.js"
 compatibility_date = "2026-11-24"
+workers_dev = true
 
 [assets]
 directory = "./public"
