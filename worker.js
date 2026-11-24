@@ -8,7 +8,9 @@ const res0=j=>j&&j.chart&&j.chart.result&&j.chart.result[0];
 const SQ=s=>s.endsWith('=X')?s.slice(0,-2).toLowerCase():/^[A-Z]+$/.test(s)?s.toLowerCase()+'.us':null;
 async function stooq(s){const q=SQ(s);if(!q)return null;try{const r=await fetch('https://stooq.com/q/l/?s='+q+'&f=sd2t2cp&h&e=csv',{headers:H,signal:AbortSignal.timeout(6000)});const t=(await r.text()).trim().split('\n')[1];if(!t)return null;const a=t.split(','),px=parseFloat(a[3]);if(!px)return null;const ts=Date.parse(a[1]+'T'+a[2]+'Z')/1000-3600;return{p:px,prev:parseFloat(a[4])||null,t:isNaN(ts)?Math.floor(Date.now()/1000):ts};}catch(e){return null;}}
 const quote=s=>cached('q'+s,s.endsWith('=X')?4000:9000,async()=>{const m=(res0(await yj('/v8/finance/chart/'+encodeURIComponent(s)+'?interval=1m&range=1d'))||{}).meta;return m&&m.regularMarketPrice?{p:m.regularMarketPrice,prev:m.chartPreviousClose||m.previousClose||null,t:m.regularMarketTime}:await stooq(s);});
-const IV={'1m':['1m','5d'],'5m':['5m','1mo'],'15m':['15m','1mo'],'1h':['60m','6mo'],'4h':['60m','1y'],'1d':['1d','2y']};
+// Free Yahoo chart history is provider-limited: 1m is only a few days, intraday ranges are limited, daily can reach 5y.
+// For full 5y intraday backtests, import licensed/provider CSV history via the Backtest Market Data page.
+const IV={'1m':['1m','5d'],'5m':['5m','1mo'],'15m':['15m','1mo'],'30m':['30m','1mo'],'1h':['60m','2y'],'4h':['60m','2y'],'1d':['1d','5y']};
 const candles=(s,i)=>cached('c'+s+i,i==='1m'?10000:30000,async()=>{
   const[iv,rg]=IV[i]||IV['1h'],r=res0(await yj('/v8/finance/chart/'+encodeURIComponent(s)+'?interval='+iv+'&range='+rg));
   if(!r||!r.timestamp)return null;const q=r.indicators.quote[0];let out=[];
