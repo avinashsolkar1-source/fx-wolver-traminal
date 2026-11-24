@@ -1,0 +1,42 @@
+name: Restore FXWOLVER website files
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Extract original website archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f public/index.html ]; then
+            echo "Website files are already restored."
+            exit 0
+          fi
+          archive="$(find . -maxdepth 1 -type f -name '*.zip' -print -quit)"
+          if [ -z "$archive" ]; then
+            echo "No ZIP archive found in repository root."
+            exit 1
+          fi
+          unzip -oq "$archive" -d .
+          test -s public/index.html
+          test -s public/_worker.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/
+          if git diff --cached --quiet; then
+            echo "No website file changes to commit."
+            exit 0
+          fi
+          git commit -m "Restore FXWOLVER website assets from archive"
+          git push
