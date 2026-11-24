@@ -21,11 +21,11 @@
 
   /* ---------- instrument spec ---------- */
   F.MARKETS = {
-    crypto: ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'LINKUSDT'],
-    forex: ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURJPY', 'GBPJPY', 'EURGBP'],
-    metals: ['XAUUSD', 'XAGUSD'],
-    indices: ['US30', 'NAS100', 'SPX500', 'GER40', 'UK100'],
-    stocks: ['AAPL', 'TSLA', 'NVDA', 'MSFT', 'AMZN'],
+    crypto: ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'LINKUSDT', 'AVAXUSDT', 'DOTUSDT', 'LTCUSDT', 'TRXUSDT', 'BCHUSDT', 'NEARUSDT', 'ATOMUSDT'],
+    forex: ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURJPY', 'GBPJPY', 'EURGBP', 'EURCHF', 'EURAUD', 'EURCAD', 'EURNZD', 'GBPCHF', 'GBPAUD', 'GBPCAD', 'GBPNZD', 'AUDJPY', 'AUDCAD', 'AUDCHF', 'AUDNZD', 'CADJPY', 'CHFJPY', 'NZDJPY', 'NZDCAD', 'NZDCHF', 'CADCHF'],
+    metals: ['XAUUSD', 'XAGUSD', 'XPTUSD', 'XPDUSD'],
+    indices: ['US30', 'NAS100', 'SPX500', 'GER40', 'UK100', 'NIFTY50', 'SENSEX', 'JPN225', 'HKG50', 'EU50'],
+    stocks: ['AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'META', 'TSLA', 'BRK-B', 'JPM', 'AVGO', 'WMT', 'LLY', 'RELIANCE.NS', 'TCS.NS', 'INFY.NS', 'HDFCBANK.NS', 'ICICIBANK.NS'],
   };
   F.specFor = function (symbol, market) {
     symbol = String(symbol || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
