@@ -1,0 +1,6 @@
+
+name = "fx-wolver-traminal"
+compatibility_date = "2026-11-24"
+
+[assets]
+directory = "./"
