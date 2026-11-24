@@ -35,7 +35,7 @@
 
   /* ================= NEW BACKTEST ================= */
   /* ---------- Data library: real historical data straight inside New Backtest ---------- */
-  const PROV = (m) => (m === 'crypto' ? 'binance' : 'twelvedata');
+  const PROV = (m) => (m === 'crypto' ? 'binance' : 'yahoo');
   A.tvModal = () => U.modal({ title: 'TradingView chart', html: `<div class="alert info" style="margin:0 0 10px">Status: <b>not connected</b></div><p style="margin:0 0 8px;line-height:1.6">The terminal currently runs on the native FXW chart (replay, indicators, drawing and SMC tools). To connect TradingView:</p><ol class="guide"><li>TradingView <b>Charting Library</b> access (it requires a license / application process).</li><li>Place the library files in <code>/tv/charting_library/</code> and set <code>TV_LIBRARY_PATH</code> in <code>js/config.js</code>.</li><li>A datafeed adapter is required to supply this app's candles to TradingView and control replay (not built yet).</li></ol><p class="mut" style="margin:8px 0 0">Once the library is added, this button will enable TradingView mode.</p>`, buttons: [{ label: 'Close', value: true, cls: 'pri' }] });
   A.dataCard = function (el, dsAll, S) {
     const markets = [['crypto', 'Crypto'], ['forex', 'Forex'], ['metals', 'Gold / Metals'], ['indices', 'Indices'], ['stocks', 'Stocks']]; const to0 = new Date().toISOString().slice(0, 10), fr0 = new Date(Date.now() - 180 * 864e5).toISOString().slice(0, 10);
@@ -63,7 +63,7 @@
           U.toast(d.symbol + ' ' + d.tf + ': ' + cs.length.toLocaleString() + ' candles ready'); A.pendingSel = { market: mk, symbol: d.symbol, ds: id }; A.route();
         } catch (er) { m.innerHTML = `<div class="alert err">${esc(er.message)}</div>`; b.disabled = false; }
       }));
-    })(); const fill = () => { const m = q('#dm').value; q('#ds2').innerHTML = (F.MARKETS[m] || []).map((x) => `<option>${x}</option>`).join(''); q('#dsrc').textContent = m === 'crypto' ? 'Binance (free, no key)' : 'Twelve Data (key needed)'; est(); };
+    })(); const fill = () => { const m = q('#dm').value; q('#ds2').innerHTML = (F.MARKETS[m] || []).map((x) => `<option>${x}</option>`).join(''); q('#dsrc').textContent = m === 'crypto' ? 'Binance public API (free)' : 'Yahoo Finance via Supabase (free)'; est(); };
     const est = () => { const tf = q('#dt2').value, d = (Date.parse(q('#dto').value) - Date.parse(q('#dfr').value)) / 1000; const n = d > 0 ? Math.round(d / F.TF[tf] * (q('#dm').value === 'crypto' ? 1 : 5 / 7)) : 0; q('#dest').textContent = n ? `≈ ${n.toLocaleString()} candles${n > 400000 ? ' — too many, shorten the range' : ''}` : ''; };
     ['#dm'].forEach((i) => (q(i).onchange = fill)); ['#dt2', '#dfr', '#dto'].forEach((i) => (q(i).onchange = est)); fill(); q('#tvb').onclick = A.tvModal;
     q('#dgo').onclick = async () => {
@@ -76,7 +76,7 @@
         if (cs.length < 200) throw new Error(`Only ${cs.length} candles found — at least 200 are required for a backtest. Extend the range.`);
         const sec = F.TF[tf], all = await DB.list('datasets'), same = all.find((d) => d.symbol === sym && d.market === mk && d.tfSec === sec); let merged = cs;
         if (same) { const old = await DB.loadCandles(same.id), map = new Map(old.map((c) => [c.t, c])); cs.forEach((c) => map.set(c.t, c)); merged = Array.from(map.values()).sort((a, b) => a.t - b.t); }
-        const id = same ? same.id : F.uid(), qq = F.dataQuality(merged, sec, mk), src = mk === 'crypto' ? 'Binance public API' : 'Twelve Data';
+        const id = same ? same.id : F.uid(), qq = F.dataQuality(merged, sec, mk), src = mk === 'crypto' ? 'Binance public API' : 'Yahoo Finance (Supabase Edge Function)';
         await DB.put('datasets', { id, symbol: sym, market: mk, tf, tfSec: sec, rows: merged.length, from: merged[0].t, to: merged[merged.length - 1].t, source: src, quality: { gaps: qq.gaps, missing: qq.missing }, imported_at: new Date().toISOString() }); await DB.saveCandles(id, merged);
         await DB.put('imports', { id: F.uid(), kind: 'import', at: new Date().toISOString(), filename: `${src} ${sym} ${tf}`, symbol: sym, tf, rows: cs.length, skipped: 0, dups: 0, gaps: qq.gaps });
         U.toast(`${sym} ${tf}: ${merged.length.toLocaleString()} real candles ready`); A.pendingSel = { market: mk, symbol: sym, ds: id }; A.route();
