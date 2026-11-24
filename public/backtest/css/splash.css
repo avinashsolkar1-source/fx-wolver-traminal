@@ -1,0 +1,49 @@
+/* FX WOLVER splash / starting effect — colors taken from the supplied screenshot */
+:root{
+  --fxw-bg:#050a14;
+  --fxw-navy:#0a1d3a;
+  --fxw-blue:#3b82f6;
+  --fxw-blue-soft:#7aa7f7;
+  --fxw-silver:#e6ebf5;
+  --fxw-muted:#8795ad;
+}
+#fxw-splash{
+  position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:0;
+  background:radial-gradient(ellipse 60% 45% at 50% 44%,#0d2a52 0%,#071327 45%,var(--fxw-bg) 100%);
+  transition:opacity .7s ease,visibility .7s ease;
+}
+#fxw-splash.fxw-hide{opacity:0;visibility:hidden}
+#fxw-splash .fxw-logo{
+  width:clamp(110px,26vw,170px);height:clamp(110px,26vw,170px);border-radius:50%;
+  box-shadow:0 0 60px 8px rgba(59,130,246,.35),0 0 140px 30px rgba(20,70,160,.25);
+  animation:fxwPop .9s cubic-bezier(.2,.8,.2,1) both,fxwGlow 2.6s ease-in-out .9s infinite;
+}
+#fxw-splash .fxw-name{
+  margin-top:clamp(22px,4vh,38px);font:800 clamp(26px,7vw,44px)/1 Inter,system-ui,sans-serif;
+  letter-spacing:.32em;padding-left:.32em;display:flex;
+}
+#fxw-splash .fxw-name span{
+  opacity:0;transform:translateY(10px);animation:fxwLetter .5s ease forwards;
+}
+#fxw-splash .fxw-sub{
+  margin-top:clamp(18px,3vh,28px);font:500 clamp(11px,2.8vw,15px)/1 Inter,system-ui,sans-serif;
+  letter-spacing:.4em;padding-left:.4em;color:var(--fxw-muted);text-transform:uppercase;
+  opacity:0;animation:fxwFade .8s ease 1.1s forwards;
+}
+#fxw-splash .fxw-bar{
+  margin-top:clamp(24px,4vh,36px);width:min(48vw,260px);height:3px;border-radius:3px;
+  background:rgba(255,255,255,.07);overflow:hidden;
+}
+#fxw-splash .fxw-bar i{
+  display:block;height:100%;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#2b5fc4,var(--fxw-blue),var(--fxw-blue-soft));
+  animation:fxwLoad var(--fxw-dur,2.4s) cubic-bezier(.4,0,.2,1) .3s forwards;
+}
+@keyframes fxwPop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes fxwGlow{0%,100%{box-shadow:0 0 60px 8px rgba(59,130,246,.30),0 0 140px 30px rgba(20,70,160,.20)}
+  50%{box-shadow:0 0 80px 14px rgba(59,130,246,.5),0 0 170px 40px rgba(20,70,160,.32)}}
+@keyframes fxwLetter{to{opacity:1;transform:none}}
+@keyframes fxwFade{to{opacity:1}}
+@keyframes fxwLoad{to{width:100%}}
+@media (prefers-reduced-motion:reduce){#fxw-splash *{animation-duration:.01s!important;animation-delay:0s!important}}

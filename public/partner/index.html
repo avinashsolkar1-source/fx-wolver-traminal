@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FX WOLVER — Partner Console</title>
+<meta name="theme-color" content="#05080e">
+<link rel="icon" href="../logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05080e;--panel:#0a1019;--p2:#0f1724;--line:#18222f;--line2:#223046;--text:#e7edf6;--muted:#8392a8;--dim:#5a6a82;--blue:#2f80ff;--up:#19c37d;--down:#f0455a;--amber:#f5b83d;--ui:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 var(--ui);min-height:100vh;overflow-x:hidden;background-image:radial-gradient(900px 480px at 85% -120px,rgba(47,128,255,.17),transparent),radial-gradient(700px 400px at -10% 40%,rgba(25,195,125,.06),transparent)}
+body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.22;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse at 50% 0,#000,transparent 75%);mask-image:radial-gradient(ellipse at 50% 0,#000,transparent 75%)}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:30;background:rgba(5,8,14,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1320px;margin:0 auto;padding:0 20px;height:62px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:11px}.logo img{width:34px;height:34px;border-radius:9px;object-fit:cover;box-shadow:0 0 0 1px var(--line2),0 0 24px rgba(47,128,255,.35)}
+.logo b{letter-spacing:2px;font-size:14px;font-weight:800}.logo small{display:block;font-size:9px;letter-spacing:3px;color:var(--muted);margin-top:-2px}
+.sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:30px;border:1px solid var(--line2);background:var(--p2);font-size:12px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 0 rgba(245,184,61,.6);animation:pl 2s infinite}.dot.on{background:var(--up);box-shadow:0 0 0 0 rgba(25,195,125,.6)}
+@keyframes pl{70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.btn{height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--line2);background:var(--p2);color:var(--text);font-weight:600;font-size:12.5px;transition:.18s}.btn:hover{border-color:var(--blue);background:rgba(47,128,255,.12)}
+.btn.pri{background:linear-gradient(180deg,#3d8bff,#2468d8);border-color:#2f80ff;box-shadow:0 6px 24px rgba(47,128,255,.3)}
+main{max-width:1320px;margin:0 auto;padding:26px 20px 60px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.6px}h1 em{font-style:normal;background:linear-gradient(90deg,#5aa0ff,#19c37d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);margin-top:6px;max-width:780px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:22px}
+.k{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--p2),var(--panel));border:1px solid var(--line2);border-radius:14px;padding:16px 16px 14px;transition:.25s}
+.k:hover{border-color:var(--blue);transform:translateY(-2px)}
+.k:after{content:"";position:absolute;inset:0;background:radial-gradient(220px circle at var(--mx,50%) var(--my,0),rgba(47,128,255,.12),transparent 60%);opacity:0;transition:.3s}.k:hover:after{opacity:1}
+.k span{font-size:10.5px;letter-spacing:1.4px;color:var(--dim);font-weight:700;text-transform:uppercase}
+.k b{display:block;font-family:var(--mono);font-size:25px;font-weight:600;margin-top:6px;letter-spacing:-.5px}
+.k small{font-size:11px;color:var(--muted)}
+.pos{color:var(--up)}.neg{color:var(--down)}.amb{color:var(--amber)}
+.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-top:14px}
+.card{background:linear-gradient(180deg,var(--p2),var(--panel));border:1px solid var(--line2);border-radius:16px;overflow:hidden;position:relative}
+.card>h3{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);font-size:13px;letter-spacing:.3px}
+.card>h3 small{margin-left:auto;font-weight:500;color:var(--muted);font-size:11px}
+.tw{overflow:auto;max-height:430px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}th{position:sticky;top:0;background:#0b121c;text-align:right;font-size:10px;letter-spacing:1.2px;color:var(--dim);padding:10px 14px;font-weight:700}th:first-child,td:first-child{text-align:left}
+td{padding:11px 14px;border-top:1px solid var(--line);text-align:right;font-family:var(--mono);font-size:12px;white-space:nowrap}td:first-child{font-family:var(--ui);font-weight:600}
+tr.fl td{animation:fl .9s}@keyframes fl{from{background:rgba(47,128,255,.22)}to{background:transparent}}
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.5px;font-family:var(--ui)}
+.t-ok{background:rgba(25,195,125,.14);color:var(--up);border:1px solid rgba(25,195,125,.35)}.t-w{background:rgba(245,184,61,.14);color:var(--amber);border:1px solid rgba(245,184,61,.4)}.t-b{background:rgba(240,69,90,.14);color:var(--down);border:1px solid rgba(240,69,90,.4)}.t-n{background:rgba(131,146,168,.12);color:var(--muted);border:1px solid var(--line2)}
+.feed{max-height:430px;overflow:auto;padding:6px 0}
+.ev{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid var(--line);animation:in .45s both;font-size:12.5px}
+@keyframes in{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.ev .k2{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.8px;padding:4px 0;text-align:center;border-radius:6px}
+.k-open{background:rgba(47,128,255,.16);color:#8bb8ff}.k-close{background:rgba(131,146,168,.16);color:#c3cddc}.k-modify{background:rgba(245,184,61,.14);color:var(--amber)}.k-snap{background:rgba(255,255,255,.05);color:var(--dim)}
+.ev small{display:block;color:var(--muted);font-size:11px;font-family:var(--mono)}.ev .r{text-align:right;font-family:var(--mono);font-size:12px}
+.empty{padding:42px 22px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}.empty b{display:block;color:var(--text);margin-bottom:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.ch{padding:14px 18px 18px}.ch svg{width:100%;height:150px;display:block}.ch .lg{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-top:8px}.ch .lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+.set{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.set input{width:70px;height:30px;background:#0a111c;border:1px solid var(--line2);color:#fff;border-radius:7px;padding:0 8px;font-family:var(--mono)}
+.tabs{display:flex;gap:4px;padding:10px 14px 0;border-bottom:1px solid var(--line)}.tabs button{height:34px;padding:0 14px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-weight:600;font-size:12.5px}.tabs button.on{color:#fff;border-bottom-color:var(--blue)}
+pre{margin:0;padding:18px;font:12px/1.7 var(--mono);color:#b8c6dc;overflow:auto;background:#070b12;position:relative;white-space:pre}pre i{color:#5a6a82;font-style:normal}pre b{color:#7fb2ff;font-weight:600}pre em{color:#6fe3b2;font-style:normal}
+.cp{position:absolute;right:12px;top:10px;height:28px;font-size:11px}
+.embed{display:none;margin-top:14px}.embed.show{display:block;animation:in .4s}
+.embed .bar{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted);flex-wrap:wrap}.embed input{height:30px;background:#0a111c;border:1px solid var(--line2);color:#fff;border-radius:7px;padding:0 9px;font-family:var(--mono);font-size:12px;width:150px}
+.embed iframe{width:100%;height:72vh;min-height:520px;border:0;display:block;background:#05080e}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.grid,.two{grid-template-columns:1fr}}
+@media(max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}.top .in{gap:8px}.pill.hide{display:none}}
+</style>
+<link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>
+<body>
+<div class="top"><div class="in">
+ <a class="logo" href="../"><img src="../logo.webp" alt=""><div><b>FX WOLVER</b><small>PARTNER CONSOLE</small></div></a>
+ <span class="sp"></span>
+ <span class="pill hide" id="chs"><i class="dot" id="dot"></i><span id="conn">Waiting for trades…</span></span>
+ <button class="btn" id="tbtn">Open terminal here</button>
+ <a class="btn pri" href="../terminal/index.html" target="_blank" rel="noopener">Terminal ↗</a>
+</div></div>
+
+<main>
+ <h1>Risk &amp; reward of <em>every trader</em>, in one place</h1>
+ <p class="lead">Your traders use the FX WOLVER terminal on your platform. Every trade they open, change or close, and a live account snapshot, arrives here with the dollar risk, reward and R:R already calculated.</p>
+
+ <div class="kpis" id="kpis"></div>
+
+ <div class="grid">
+  <div class="card"><h3>Traders <small id="nUsers"></small></h3><div class="tw" id="users"></div>
+   <div class="set">High-risk alert when open risk is above <input id="thr" type="number" value="3" min="0.5" step="0.5"> % of equity <span style="margin-left:auto"><button class="btn" id="clr">Clear data</button></span></div></div>
+  <div class="card"><h3><i class="dot on"></i>Live trade feed <small id="nEv"></small></h3><div class="feed" id="feed"></div></div>
+ </div>
+
+ <div class="two">
+  <div class="card"><h3>Planned risk : reward <small>per trade, at entry</small></h3><div class="ch" id="c1"></div></div>
+  <div class="card"><h3>Result in R <small>pnl ÷ planned risk, closed trades</small></h3><div class="ch" id="c2"></div></div>
+ </div>
+
+ <div class="embed" id="emb"><div class="card"><div class="bar"><b style="color:#fff">Live terminal</b>
+   <label>Trader id <input id="uid" value="trader-001"></label><label>Firm <input id="firm" value="demo"></label><button class="btn" id="reload">Reload</button>
+   <span style="margin-left:auto">Trades you make here appear above instantly.</span></div>
+   <iframe id="frm" title="FX WOLVER terminal" allow="clipboard-write; fullscreen"></iframe></div></div>
+
+ <div class="card" style="margin-top:14px"><h3>Connect your platform</h3>
+  <div class="tabs" id="tabs"><button class="on" data-t="a">Embed + postMessage</button><button data-t="b">Webhook</button><button data-t="c">Event format</button></div>
+  <div style="position:relative"><button class="btn cp" id="cp">Copy</button><pre id="code"></pre></div>
+  <div class="set"><span>Test the connection:</span><button class="btn" id="test">Send a test event</button><span id="tmsg"></span></div>
+ </div>
+</main>
+
+<script>
+(function(){
+var $=function(q){return document.querySelector(q)},KEY='fxw.partner.ev.v1',EV=[],seen={},USERS={},base=location.origin;
+try{EV=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+function key(m){return m.user+'|'+m.event+'|'+m.t+'|'+((m.data&&m.data.id)||'')+'|'+((m.data&&m.data.symbol)||'')}
+EV.forEach(function(m){seen[key(m)]=1});
+var money=function(v,s){if(v==null||isNaN(v))return '—';var a=Math.abs(v),t='$'+a.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});return (v<0?'−':(s?'+':''))+t};
+var pct=function(v,d){return v==null||isNaN(v)?'—':v.toFixed(d==null?2:d)+'%'};
+var ago=function(t){var s=Math.max(0,Math.round((Date.now()-t)/1000));return s<60?s+'s':s<3600?Math.floor(s/60)+'m':Math.floor(s/3600)+'h'};
+function push(m,live){if(!m||m.type!=='fxw.trade'||!m.event)return;var k=key(m);if(seen[k])return;seen[k]=1;EV.push(m);if(EV.length>800)EV.shift();
+  try{localStorage.setItem(KEY,JSON.stringify(EV))}catch(e){}
+  if(live){render(m)}}
+/* ---- intake: iframe postMessage, other tabs (BroadcastChannel), local server ---- */
+addEventListener('message',function(e){if(e.data&&e.data.type==='fxw.trade')push(e.data,true)});
+try{var bc=new BroadcastChannel('fxw-events');bc.onmessage=function(e){push(e.data,true)}}catch(e){}
+var since=0;function poll(){fetch('../api/events?since='+since,{cache:'no-store'}).then(function(r){return r.ok?r.json():[]}).then(function(a){a.forEach(function(m){since=Math.max(since,m.srv||0);push(m,true)})}).catch(function(){})}
+poll();setInterval(poll,3000);
+/* ---- model ---- */
+function model(){USERS={};var cl=[],op=[];
+  EV.forEach(function(m){var u=USERS[m.user]=USERS[m.user]||{id:m.user,firm:m.firm,snap:null,tr:0,w:0,pnl:0,rs:[],last:0,risk:[]};u.last=Math.max(u.last,m.t);if(m.firm)u.firm=m.firm;var d=m.data||{};
+    if(m.event==='snapshot')u.snap=d;
+    else if(m.event==='open'){op.push(d);if(d.riskPct!=null)u.risk.push(d.riskPct);}
+    else if(m.event==='close'){u.tr++;if(d.pnl>0)u.w++;u.pnl+=d.pnl||0;if(d.rMultiple!=null)u.rs.push(d.rMultiple);cl.push(d);}});
+  return{cl:cl,op:op};}
+function stat(u){var s=u.snap;if(!s||!s.status)return['t-n','No rules'];var map={active:['t-ok','Active'],failed:['t-b','Failed'],passed:['t-ok','Passed']};return map[s.status]||['t-n',s.status];}
+/* ---- draw ---- */
+function render(newest){var M=model(),us=Object.keys(USERS).map(function(k){return USERS[k]}).sort(function(a,b){return b.last-a.last}),thr=+$('#thr').value||3;
+  var sn=us.map(function(u){return u.snap}).filter(Boolean),allR=[],allPl=[],wins=0,trs=0,pnl=0;
+  us.forEach(function(u){trs+=u.tr;wins+=u.w;pnl+=u.pnl;allR=allR.concat(u.rs)});
+  M.op.forEach(function(d){if(d.rr!=null)allPl.push(d.rr)});
+  var openRisk=sn.reduce(function(a,s){return a+(s.openRiskUsd||0)},0),openN=sn.reduce(function(a,s){return a+(s.open||0)},0),avgR=allPl.length?allPl.reduce(function(a,b){return a+b},0)/allPl.length:null,rp=[];
+  M.op.forEach(function(d){if(d.riskPct!=null)rp.push(d.riskPct)});var avgRp=rp.length?rp.reduce(function(a,b){return a+b},0)/rp.length:null,avgRes=allR.length?allR.reduce(function(a,b){return a+b},0)/allR.length:null;
+  var risky=us.filter(function(u){return u.snap&&u.snap.openRiskPct>thr}).length;
+  var K=[['Traders',us.length,'live accounts'],['Open positions',openN,money(openRisk)+' at risk'],['Avg planned R:R',avgR==null?'—':'1 : '+avgR.toFixed(2),allPl.length+' trades with SL+TP'],['Avg risk / trade',avgRp==null?'—':pct(avgRp),'of equity at entry'],['Win rate',trs?pct(wins/trs*100,0):'—',trs+' closed · avg '+(avgRes==null?'—':avgRes.toFixed(2)+'R')],['Net P/L',money(pnl,true),risky?risky+' high-risk trader'+(risky>1?'s':''):'no risk alerts']];
+  $('#kpis').innerHTML=K.map(function(k,i){var c=i===5?(pnl>0?'pos':pnl<0?'neg':''):i===1&&openRisk?'amb':'';return'<div class="k"><span>'+k[0]+'</span><b class="'+c+'">'+k[1]+'</b><small>'+k[2]+'</small></div>'}).join('');
+  $('#nUsers').textContent=us.length+' total';
+  $('#users').innerHTML=us.length?'<table><thead><tr><th>TRADER</th><th>EQUITY</th><th>TODAY</th><th>OPEN RISK</th><th>WIN</th><th>AVG R</th><th>STATUS</th><th>SEEN</th></tr></thead><tbody>'+us.map(function(u){var s=u.snap||{},st=stat(u),hr=s.openRiskPct>thr,ar=u.rs.length?u.rs.reduce(function(a,b){return a+b},0)/u.rs.length:null;
+    return'<tr'+(newest&&newest.user===u.id?' class="fl"':'')+'><td>'+esc(u.id)+(u.firm?' <span style="color:var(--dim);font-weight:400">· '+esc(u.firm)+'</span>':'')+'</td><td>'+money(s.equity)+'</td><td class="'+(s.dayPnl>0?'pos':s.dayPnl<0?'neg':'')+'">'+money(s.dayPnl,true)+'</td><td class="'+(hr?'neg':'')+'">'+(s.openRiskPct!=null?pct(s.openRiskPct):'—')+(hr?' <span class="tag t-b">HIGH</span>':'')+'</td><td>'+(u.tr?pct(u.w/u.tr*100,0):'—')+'</td><td>'+(ar==null?'—':ar.toFixed(2)+'R')+'</td><td><span class="tag '+st[0]+'">'+st[1]+'</span></td><td style="color:var(--dim)">'+ago(u.last)+'</td></tr>'}).join('')+'</tbody></table>'
+    :'<div class="empty"><b>No traders yet</b>Press “Open terminal here”, then open a trade. Or send a test event below.<br>Your real traders appear here as soon as their terminal sends data.</div>';
+  var ev=EV.filter(function(m){return m.event!=='snapshot'}).slice(-40).reverse();$('#nEv').textContent=EV.filter(function(m){return m.event!=='snapshot'}).length+' events';
+  $('#feed').innerHTML=ev.length?ev.map(function(m,i){var d=m.data||{},t=m.event==='open'?(d.side+' '+(+d.lots).toFixed(2)+' '+d.symbol):m.event==='modify'?('SL/TP '+d.symbol):(d.symbol+' '+(d.reason||'closed')),sub=m.event==='close'?('pnl '+money(d.pnl,true)+(d.rMultiple!=null?' · '+d.rMultiple.toFixed(2)+'R':'')):(d.riskUsd!=null?'risk '+money(d.riskUsd)+' · reward '+money(d.rewardUsd)+(d.rr?' · 1:'+d.rr.toFixed(2):''):'no stop loss set'),rt=m.event==='close'?'<span class="'+(d.pnl>0?'pos':'neg')+'">'+money(d.pnl,true)+'</span>':(d.riskPct!=null?pct(d.riskPct)+' risk':'');
+    return'<div class="ev" style="animation-delay:'+(newest?0:Math.min(i,10)*30)+'ms"><span class="k2 k-'+m.event+'">'+m.event.toUpperCase()+'</span><div><b>'+esc(m.user)+'</b> · '+esc(t)+(m.test?' <span class="tag t-n">TEST</span>':'')+'<small>'+sub+'</small></div><div class="r">'+rt+'<small>'+ago(m.t)+'</small></div></div>'}).join(''):'<div class="empty"><b>Waiting for trades</b>Every open, SL/TP change and close shows up here the moment it happens.</div>';
+  $('#dot').classList.toggle('on',EV.length>0);$('#conn').textContent=EV.length?'Connected · last event '+ago(EV[EV.length-1].t)+' ago':'Waiting for trades…';
+  hist('#c1',allPl,[0.5,1,1.5,2,3,5],'1 : ','#2f80ff');hist('#c2',allR,[-2,-1,0,1,2,3],'','#19c37d',true);}
+function hist(sel,arr,edges,pre,col,signed){var el=$(sel);if(!arr.length){el.innerHTML='<div class="empty" style="padding:30px 0">No data yet</div>';return}
+  var n=edges.length+1,b=new Array(n).fill(0);arr.forEach(function(v){var i=0;while(i<edges.length&&v>=edges[i])i++;b[i]++});var mx=Math.max.apply(0,b),w=100/n,h='';
+  b.forEach(function(c,i){var lab=i===0?'< '+pre+edges[0]:i===n-1?'≥ '+pre+edges[n-2]:pre+edges[i-1]+'–'+edges[i],hh=c/mx*100,neg=signed&&i<=edges.indexOf(0);
+   h+='<rect x="'+(i*w+w*.14)+'" y="'+(110-hh)+'" width="'+w*.72+'" height="'+hh+'" rx="2" fill="'+(neg?'#f0455a':col)+'" opacity=".85"><animate attributeName="height" from="0" to="'+hh+'" dur=".6s"/><animate attributeName="y" from="110" to="'+(110-hh)+'" dur=".6s"/></rect><text x="'+(i*w+w/2)+'" y="126" fill="#8392a8" font-size="5" text-anchor="middle">'+lab+'</text><text x="'+(i*w+w/2)+'" y="'+(106-hh)+'" fill="#e7edf6" font-size="6" text-anchor="middle">'+(c||'')+'</text>'});
+  el.innerHTML='<svg viewBox="0 0 100 130" preserveAspectRatio="none">'+h+'</svg><div class="lg"><span>'+arr.length+' trades</span></div>';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+/* ---- embed ---- */
+function load(){$('#frm').src='../terminal/index.html?firm='+encodeURIComponent($('#firm').value||'demo')+'&uid='+encodeURIComponent($('#uid').value||'trader-001')+'&name='+encodeURIComponent('Partner demo');}
+$('#tbtn').onclick=function(){var e=$('#emb'),on=!e.classList.contains('show');e.classList.toggle('show',on);this.textContent=on?'Close terminal':'Open terminal here';if(on){if(!$('#frm').src)load();e.scrollIntoView({behavior:'smooth',block:'start'})}};
+$('#reload').onclick=load;
+$('#thr').oninput=function(){render()};
+$('#clr').onclick=function(){if(!confirm('Clear all events shown in this console?'))return;EV=[];seen={};try{localStorage.removeItem(KEY)}catch(e){}render()};
+/* ---- test event (clearly marked TEST) ---- */
+$('#test').onclick=function(){var t=Date.now(),id='test-'+(t%1000);
+  var o={type:'fxw.trade',event:'open',firm:'demo',user:'test-trader',t:t,test:1,data:{id:t,symbol:'EURUSD',side:'BUY',lots:0.2,price:1.085,sl:1.082,tp:1.091,riskUsd:60,rewardUsd:120,rr:2,riskPct:0.6,equity:10000}};
+  push(o,true);setTimeout(function(){push({type:'fxw.trade',event:'snapshot',firm:'demo',user:'test-trader',t:Date.now(),test:1,data:{balance:10000,equity:10010,floating:10,dayPnl:10,open:1,openRiskUsd:60,openRiskPct:0.6,trades:0,status:'active',phase:0}},true)},50);
+  $('#tmsg').textContent='Test event received ✓ (marked TEST). Use “Clear data” to remove it.';};
+/* ---- code samples ---- */
+var C={a:'<i>&lt;!-- 1. put the terminal on your page, one link per trader --&gt;</i>\n&lt;iframe src="<b>'+base+'/terminal/?firm=acme&amp;plan=2phase&amp;uid=TRADER_ID&amp;name=ACME%20Funded&amp;color=%23ff6a00</b>"&gt;&lt;/iframe&gt;\n\n<i>// 2. receive every event on your page</i>\nwindow.addEventListener("message", e =&gt; {\n  const m = e.data;\n  if (m.type !== "fxw.trade") return;\n  <i>// m.event: "open" | "modify" | "close" | "snapshot"</i>\n  <i>// m.user = TRADER_ID, m.data = risk, reward, R:R, pnl ...</i>\n  sendToYourServer(m);\n});',
+b:'<i>&lt;!-- the terminal POSTs every event to your server (HTTPS only) --&gt;</i>\n&lt;iframe src="<b>'+base+'/terminal/?firm=acme&amp;plan=2phase&amp;uid=TRADER_ID&amp;hook=https://api.yourfirm.com/fxw</b>"&gt;&lt;/iframe&gt;\n\n<i>// your endpoint (Node / Express example)</i>\napp.post("/fxw", express.text({type:"*/*"}), (req, res) =&gt; {\n  const m = JSON.parse(req.body);\n  db.save(m);            <i>// store it, then check your rules</i>\n  res.sendStatus(200);\n});\n\n<i>// note: the browser sends it, so the trader must be online. For a hard\n// guarantee, add a server-to-server feed in the next release.</i>',
+c:'{\n  <em>"type"</em>: "fxw.trade",\n  <em>"event"</em>: "open",              <i>// open | modify | close | snapshot</i>\n  <em>"firm"</em>: "acme",  <em>"user"</em>: "TRADER_ID",  <em>"t"</em>: 1731700000000,\n  <em>"data"</em>: {\n    "symbol": "EURUSD", "side": "BUY", "lots": 0.2, "price": 1.0854,\n    "sl": 1.0824, "tp": 1.0914,\n    "riskUsd": 60, "rewardUsd": 120, "rr": 2, "riskPct": 0.6   <i>// calculated by the terminal</i>\n  }\n}\n\n<i>// close  : pnl, reason (SL / TP / MANUAL / RULE BREACH), rMultiple, plannedRR</i>\n<i>// snapshot (every 10 s): balance, equity, floating, dayPnl, open, openRiskUsd,\n//   openRiskPct, winRate, phase, status (active | failed | passed)</i>'};
+function code(t){$('#code').innerHTML=C[t];[].forEach.call(document.querySelectorAll('#tabs button'),function(b){b.classList.toggle('on',b.dataset.t===t)});}
+$('#tabs').onclick=function(e){var b=e.target.closest('button');if(b)code(b.dataset.t)};
+$('#cp').onclick=function(){var tx=$('#code').textContent;try{navigator.clipboard.writeText(tx);this.textContent='Copied ✓';var s=this;setTimeout(function(){s.textContent='Copy'},1500)}catch(e){}};
+document.addEventListener('mousemove',function(e){var c=e.target.closest&&e.target.closest('.k');if(!c)return;var r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')});
+code('a');render();setInterval(function(){render()},5000);
+})();
+</script>
+</body>
+</html>

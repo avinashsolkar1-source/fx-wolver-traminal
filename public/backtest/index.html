@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FX WOLVER — Backtest, Journal, Analyze</title><meta name="description" content="Historical replay backtesting, paper trading, journal and analytics with your own market data.">
+<meta name="theme-color" content="#050a14"><link rel="icon" href="assets/favicon.png"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="assets/logo-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Sora:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/splash.css"><link rel="stylesheet" href="css/style.css"><script src="js/splash.js"></script>
+<style>html,body{height:100%}body{overflow-x:hidden;overflow-y:auto}.steps{counter-reset:s}.steps .card{position:relative;padding-top:34px}.steps .card:before{counter-increment:s;content:counter(s);position:absolute;top:10px;left:14px;color:#3b82f6;font-weight:800;font-family:var(--display)}
+.cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.wmk{font-family:var(--display);font-weight:800;font-size:clamp(34px,7vw,64px);letter-spacing:.16em;padding-left:.16em;margin:34px 0 6px;background:linear-gradient(90deg,#fff 0,#b7c6e4 45%,#3b82f6 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:wmv 6s ease-in-out infinite alternate}
+@keyframes wmv{to{background-position:100% 0}}.hero{padding-top:0}.lp{display:grid;place-items:center;min-height:100%}.hero{max-width:520px;width:100%;padding:6vh 20px}.foot{border:0;padding:14px 20px;position:static;text-align:center}.lp{grid-template-rows:1fr auto;align-content:center}.lp.open .wmk{margin:14px 0 2px;font-size:clamp(28px,5vw,44px)}.lp.open .lfx.big{transform:scale(.62);transform-origin:center top;margin-bottom:-40px}.lp.open .hero{padding-top:3vh}.lgbtn{min-width:220px;min-height:50px;font-size:16px;font-weight:700}</style></head>
+<body><div class="lp">
+<header class="hero"><span class="lfx big reveal"><span class="orb"><i></i></span><img src="assets/logo.png" alt="FX Wolver"></span>
+<div class="wmk reveal" style="animation-delay:.15s">FXWOLVER</div><div class="tag reveal" style="animation-delay:.25s">Trading Terminal</div>
+<div class="reveal cta" style="animation-delay:.4s"><button class="btn pri lgbtn" id="lgn" type="button">Login</button><button class="btn lgbtn" id="reg" type="button">Create account</button></div>
+<div class="card authcard hide" id="account">
+<button class="btn gbtn" id="gg" type="button"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg> Continue with Google</button><div class="or"><span>or use email</span></div>
+<div class="tabs2"><button class="btn pri" id="tin" type="button">Login</button><button class="btn" id="tup" type="button">Create account</button></div>
+<form id="af" novalidate><label class="f" for="em">Email</label><input class="in" id="em" type="email" autocomplete="email" placeholder="you@gmail.com"><label class="f" for="pw" style="margin-top:10px">Password</label><input class="in" id="pw" type="password" autocomplete="current-password" placeholder="At least 8 characters"><div id="am" style="margin-top:10px"></div><button class="btn pri" id="ago" type="submit" style="width:100%;margin-top:10px">Login</button></form>
+<p class="hint hide" id="localnote" style="margin:12px 0 0;text-align:center">Cloud login is not connected yet. <a href="app.html#/bt/workspace" style="color:var(--blue2)">Continue in local mode</a></p></div>
+</header>
+<div class="foot">Simulation and education tool. Paper trading only.</div>
+</div>
+<script src="js/config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+  var cfg=window.FXW_CONFIG||{},$=function(i){return document.getElementById(i)},mode='in',sb=null,GO='app.html#/bt/workspace';
+  var cloud=!!(cfg.SUPABASE_ANON_KEY&&window.supabase&&window.supabase.createClient);
+  if(cloud)sb=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+  var logged=false;
+  function openCard(m){ document.querySelector('.lp').classList.add('open'); $('account').classList.remove('hide'); document.querySelector('.cta').classList.add('hide'); setMode(m); if(!cloud)$('localnote').classList.remove('hide'); $('em').focus() }
+  $('lgn').onclick=function(){ if(logged){location.href=GO;return} openCard('in') };
+  $('reg').onclick=function(){ openCard('up') };
+  $('gg').onclick=async function(){ if(!sb){msg('Google login needs the Supabase connection (add the anon key and enable the Google provider).','err');return} try{ var fr=(window.top!==window); var r=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname.replace(/[^/]*$/,'')+GO,skipBrowserRedirect:fr}}); if(r.error)throw r.error; if(fr&&r.data&&r.data.url){window.top.location.href=r.data.url} }catch(x){msg(x.message||'Google login failed','err')} };
+  if(sb)sb.auth.getSession().then(function(r){if(r&&r.data&&r.data.session){logged=true;$('lgn').textContent='Open terminal';$('reg').classList.add('hide')}}).catch(function(){});
+  function setMode(m){mode=m;$('tin').className='btn '+(m==='in'?'pri':'');$('tup').className='btn '+(m==='up'?'pri':'');$('ago').textContent=m==='in'?'Login':'Create account';$('pw').autocomplete=m==='in'?'current-password':'new-password';$('am').innerHTML=''}
+  $('tin').onclick=function(){setMode('in')};$('tup').onclick=function(){setMode('up')};
+  function msg(t,c){var d=document.createElement('div');d.className='alert '+c;d.textContent=t;$('am').innerHTML='';$('am').appendChild(d)}
+  $('af').onsubmit=async function(e){e.preventDefault();if(!sb){msg('Email login needs the Supabase connection. Use local mode for now.','err');return}var em=$('em').value.trim(),pw=$('pw').value;
+    if(!/^\S+@\S+\.\S+$/.test(em))return msg('Enter a valid email address.','err');if(pw.length<8)return msg('Password must be at least 8 characters.','err');
+    $('ago').disabled=true;try{var r=mode==='in'?await sb.auth.signInWithPassword({email:em,password:pw}):await sb.auth.signUp({email:em,password:pw});
+      if(r.error)throw r.error;if(mode==='up'&&!r.data.session){msg('Account created. Confirm your email, then log in.','ok');}else{location.href=GO}}catch(x){msg(x.message||'Login fail','err')}$('ago').disabled=false};
+})();
+</script></body></html>

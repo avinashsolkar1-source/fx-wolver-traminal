@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FX WOLVER Journal</title>
+<meta name="description" content="FX WOLVER Journal: log the reason behind every trade, review what worked, export to CSV.">
+<link rel="icon" href="../icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="journal.css">
+</head>
+<body>
+
+<!-- 1. STARTING EFFECT (before the logo) -->
+<div id="splash" aria-hidden="true">
+  <canvas id="spc"></canvas>
+  <div class="sp-in">
+    <div class="sp-word" id="spw"></div>
+    <div class="sp-line"></div>
+    <div class="sp-sub">TRADE JOURNAL</div>
+    <img class="sp-logo" src="../logo.webp" alt="" onerror="this.style.display='none'">
+  </div>
+  <button id="spskip" type="button">Skip</button>
+</div>
+
+<!-- 2. LOGIN-STYLE GATE -->
+<main id="gate" hidden>
+  <div class="gcard">
+    <img class="glogo" src="../logo.webp" alt="FX WOLVER" onerror="this.style.display='none'">
+    <h1>Welcome to your Journal</h1>
+    <p class="gsub">Every trade, every reason, one private record. Everything you write is saved automatically.</p>
+    <form id="gform" autocomplete="off">
+      <label>Your name<input id="gname" placeholder="e.g. Alex Morgan" maxlength="40"></label>
+      <label>Email <span class="opt">optional</span><input id="gmail" type="email" placeholder="you@example.com" maxlength="80"></label>
+      <button class="btn pri" type="submit">Continue to my Journal</button>
+    </form>
+    <div class="gor"><span>or</span></div>
+    <button class="btn ghost" id="ggoogle" type="button">Continue with Google</button>
+    <button class="btn link" id="gsolo" type="button">Use as Solo, no details needed</button>
+    <p class="gnote" id="gnote"></p>
+  </div>
+</main>
+
+<!-- 3. APP -->
+<div id="app" hidden>
+  <header class="top">
+    <a class="brand" href="../"><img src="../logo.webp" alt="" onerror="this.style.display='none'"><span>FX WOLVER <b>Journal</b></span></a>
+    <div class="topr">
+      <span class="pill" id="modePill">SOLO</span>
+      <span class="saved" id="saved" role="status">Saved</span>
+      <button class="btn sm" id="bExport" type="button">Export CSV</button>
+      <button class="btn sm pri" id="bNew" type="button">+ New entry</button>
+      <button class="ic" id="bMenu" type="button" aria-label="Account menu">⋯</button>
+    </div>
+  </header>
+
+  <section class="wrap">
+    <div class="hello"><div><h2 id="hi">Journal</h2><p id="hisub"></p></div></div>
+
+    <div class="conn" id="conn">
+      <div class="cl"><span class="dot" id="cdot"></span><div><b id="ctitle"></b><p id="ctext"></p></div></div>
+      <div class="cr"><button class="btn sm pri" id="bConnect" type="button">Connect to Terminal</button><button class="btn sm danger" id="bDisc" type="button" hidden>Disconnect</button></div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="panel" id="eqp"><div class="ph"><b>Equity curve</b><span id="eqs"></span></div><div id="eq"></div></div>
+
+    <div class="insrow" id="ins"></div>
+
+    <div class="tools">
+      <input id="q" type="search" placeholder="Search symbol, reason or tag">
+      <select id="fSrc"><option value="">All sources</option><option value="manual">Manual</option><option value="terminal">Terminal</option><option value="sample">Sample</option></select>
+      <select id="fVer"><option value="">All verdicts</option><option value="right">Right call</option><option value="wrong">Wrong call</option><option value="none">Not reviewed</option></select>
+    </div>
+
+    <div id="list"></div>
+    <p class="foot" id="foot"></p>
+  </section>
+</div>
+
+<!-- new entry sheet -->
+<div class="sheet" id="sheet" hidden><div class="sbox">
+  <div class="sh"><b>New journal entry</b><button class="ic" id="sx" type="button" aria-label="Close">✕</button></div>
+  <form id="nform" autocomplete="off">
+    <div class="g3"><label>Symbol<input name="sym" placeholder="EURUSD" required maxlength="14" style="text-transform:uppercase"></label>
+    <label>Side<select name="side"><option>BUY</option><option>SELL</option></select></label>
+    <label>Lots<input name="lots" type="number" step="0.01" min="0" value="0.10"></label></div>
+    <div class="g3"><label>Entry price<input name="open" type="number" step="any"></label>
+    <label>Exit price<input name="close" type="number" step="any"></label>
+    <label>Result P/L ($)<input name="pnl" type="number" step="any" value="0" required></label></div>
+    <label>Why did you take this trade?<textarea name="reason" rows="3" placeholder="Setup, confirmation, risk plan…"></textarea></label>
+    <div class="g2"><label>Tags<input name="tags" placeholder="breakout, london, news"></label>
+    <label>How did you feel?<select name="emo"><option value="">Select</option><option>Calm</option><option>Confident</option><option>Hesitant</option><option>FOMO</option><option>Revenge</option><option>Tired</option></select></label></div>
+    <button class="btn pri" type="submit">Save entry</button>
+  </form>
+</div></div>
+
+<!-- account / confirm sheet -->
+<div class="sheet" id="msheet" hidden><div class="sbox sm">
+  <div class="sh"><b id="mt"></b><button class="ic" id="mx" type="button" aria-label="Close">✕</button></div>
+  <div id="mb"></div>
+</div></div>
+
+<div id="toast" role="status"></div>
+<script src="../config.js"></script>
+<script src="journal.js"></script>
+</body>
+</html>

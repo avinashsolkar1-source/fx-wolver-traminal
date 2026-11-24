@@ -1,0 +1,92 @@
+/* FX WOLVER look v4.6: own identity (wolf rail, glass cards, sparklines, chart switch) */
+:root{--vio:#7c6cff;--cy:#22d3ee}
+/* ---- quick trade card: own layout (BUY/SELL on top, lots below) ---- */
+#qcard{border-radius:16px;padding:12px 12px 10px;background:radial-gradient(120% 90% at 0% 0%,rgba(124,108,255,.16),transparent 55%),linear-gradient(180deg,#14213b,#0d1729)}
+#qcard .qh{display:flex}#qcard .qs{display:flex;align-items:baseline;gap:10px;width:100%}#qcard .qs b{font-size:16px;letter-spacing:.4px}#qcard .qs small{margin:0 0 0 auto;font:700 10.5px var(--mono);color:var(--cy);padding:3px 8px;border-radius:20px;background:rgba(34,211,238,.1)}
+.qrow{grid-template-columns:1fr 1fr!important;grid-template-areas:"s b" "l l";gap:8px!important}
+.qb{height:60px!important;border-radius:14px!important;flex-direction:row!important;justify-content:space-between!important;padding:0 14px}.qb small{font-size:11px!important;letter-spacing:1.4px}.qb b{font:800 16px var(--mono)!important}.qb.s{grid-area:s}.qb.b{grid-area:b}
+.ql{grid-area:l;display:flex!important;align-items:center;gap:10px;padding:6px 8px 6px 14px!important;border-radius:14px!important;text-align:left!important;border:1px solid var(--line)}
+.ql b{order:1;font-size:17px!important}.ql small{order:2;flex:1;margin:0!important;color:var(--muted)}.ql .st{order:3;display:flex!important;gap:6px}.ql .st button{width:40px;height:34px!important;border-radius:10px!important}
+.qf .qa{padding:6px 12px;border-radius:20px;background:rgba(124,108,255,.14)!important;color:#d7d0ff!important;font-size:12.5px!important}
+/* ---- wolf rail (laptop) ---- */
+#rail{display:none}
+@media(min-width:901px){
+ #rail{display:flex;flex-direction:column;align-items:center;gap:6px;width:56px;flex-shrink:0;padding:10px 0;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,#0f1930,#0a1220);position:relative;z-index:5}
+ #rail:before{content:"";position:absolute;left:0;top:0;right:0;height:2px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,var(--blue),var(--vio))}
+ #rail button{position:relative;width:42px;height:42px;border:0;border-radius:13px;background:transparent;color:var(--muted);display:grid;place-items:center;transition:.15s}
+ #rail button svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+ #rail button:hover{background:rgba(124,108,255,.14);color:#fff}#rail button.on{background:linear-gradient(135deg,rgba(59,140,255,.28),rgba(124,108,255,.28));color:#fff;box-shadow:0 0 18px -4px var(--blue)}
+ #rail button:after{content:attr(data-tip);position:absolute;left:52px;top:50%;transform:translateY(-50%);padding:5px 10px;border-radius:8px;background:#0a1220;border:1px solid var(--line2);color:#fff;font:600 12px var(--ui);white-space:nowrap;pointer-events:none;opacity:0;transition:.12s;z-index:50}
+ #rail button:hover:after{opacity:1}
+ #rail .gap{flex:1}
+ .navtabs{display:none!important}
+ .topbar{gap:18px}
+ .metrics{gap:12px!important}.metric:has(#mEq),.metric:has(#mPnl){padding:6px 14px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+}
+/* ---- watchlist sparkline ---- */
+.mw-cols,.mw-row{grid-template-columns:minmax(0,1fr) 46px 66px 66px 50px!important}
+
+.spk{height:26px;width:46px}.spk svg{width:100%;height:100%;display:block;overflow:visible}.spk polyline{fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}.spk .u{stroke:var(--up)}.spk .d{stroke:var(--down)}
+.mw-row.on .spk{opacity:1}
+.mw-row{position:relative}
+/* ---- chart switch ---- */
+.cmode{display:flex;padding:3px;border-radius:12px;background:#0a1120;border:1px solid var(--line);gap:2px;flex-shrink:0}
+.cmode button{height:30px;padding:0 13px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:700 12px var(--ui);display:flex;align-items:center;gap:6px}
+.cmode button.on{background:linear-gradient(135deg,#2a62d6,#6a55f0);color:#fff;box-shadow:0 6px 16px -8px var(--vio)}
+.cmode button:not(.on):hover{color:#fff}
+#tvwrap{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;background:#060a12}
+.cwrap.tvmode #tvwrap{display:flex}
+.cwrap.tvmode #cv,.cwrap.tvmode #dtools,.cwrap.tvmode .databadge,.cwrap.tvmode .wm,.cwrap.tvmode #toLatest{display:none!important}
+.chartpane.tvmode .tfs,.chartpane.tvmode #ctypeSeg,.chartpane.tvmode .mwrap,.chartpane.tvmode #setBtn,.chartpane.tvmode #tbar,.chartpane.tvmode #alertB{opacity:.28;pointer-events:none}
+.chartpane.tvmode #tbar{display:none}
+#tvc{flex:1;min-height:0;position:relative}
+#tvc iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#tvmsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:#b6c1d1;line-height:1.7;font-size:13.5px;background:#060a12}
+#tvmsg b{display:block;font-size:17px;color:#fff;margin-bottom:8px}#tvmsg button{margin-top:14px;height:38px;padding:0 18px;border:0;border-radius:10px;background:var(--blue);color:#fff;font:700 13px var(--ui)}
+/* ---- trade dock under the chart (laptop): SELL / lots / BUY, SL, TP, risk, extras ---- */
+.dock{display:none}
+@media(min-width:901px){
+.dock{flex-shrink:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:9px 12px;background:linear-gradient(180deg,#0f1930,#0a1220);border-top:1px solid var(--line2)}
+.dock .tb{height:42px;min-width:116px;border:0;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;font-weight:800;box-shadow:0 8px 20px -12px currentColor;transition:filter .12s,transform .08s}.dock .tb:hover{filter:brightness(1.12)}.dock .tb:active{transform:scale(.97)}
+.dock .tb small{font-size:10.5px;letter-spacing:1.4px}.dock .tb b{font:800 14px var(--mono)}
+.dock .tb.s{background:linear-gradient(180deg,#f2596f,#d63a52)}.dock .tb.b{background:linear-gradient(180deg,#22cf8c,#13a86c)}
+.dock .lt{display:flex;align-items:center;gap:4px;padding:3px;border-radius:12px;background:#0a1120;border:1px solid var(--line)}
+.dock .lt button{width:30px;height:34px;border:0;border-radius:9px;background:#1c2a45;color:#fff;font-size:16px}
+.dock .lt input,.dock .fl input{width:62px;height:34px;border:0;background:transparent;color:#fff;text-align:center;font:700 13px var(--mono);outline:none}
+.dock .lc{display:flex;gap:4px}.dock .lc button{height:30px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font:700 11px var(--mono)}.dock .lc button:hover{color:#fff;border-color:var(--blue)}
+.dock .fl{display:flex;align-items:center;gap:6px;padding:0 8px;border-radius:12px;background:#0a1120;border:1px solid var(--line);height:42px}
+.dock .fl span{font:800 10px var(--mono);letter-spacing:1px}.dock .fl.sl span{color:var(--down)}.dock .fl.tp span{color:var(--up)}.dock .fl input{width:78px}
+.dock .rr{font:600 11.5px var(--mono);color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}.dock .rr b{color:#fff}.dock .rr .n{color:var(--down)}.dock .rr .p{color:var(--up)}
+.dock .xb{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}.dock .xb button{height:34px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);background:rgba(124,108,255,.1);color:#d7d0ff;font:700 12px var(--ui)}.dock .xb button:hover{border-color:var(--vio);color:#fff}
+.dock .pz{flex-basis:100%;display:flex;gap:8px;flex-wrap:wrap}.dock .pz:empty{display:none}.dock .pz span{font:600 11px var(--mono);padding:5px 10px;border-radius:20px;background:#0a1120;border:1px solid var(--line);color:#cfd8e8}.dock .pz .buy{color:var(--up)}.dock .pz .sell{color:var(--down)}
+.dock .nt{display:none;flex-basis:100%;font-size:11px;color:var(--dim)}.chartpane.tvmode .dock .nt{display:block}
+}
+/* ---- maximize / minimize ---- */
+.cmm{margin-left:auto;display:flex;gap:2px;padding:3px;border-radius:10px;background:#0a1120;border:1px solid var(--line);flex-shrink:0}
+.cmm button{width:32px;height:28px;border:0;border-radius:7px;background:transparent;color:var(--muted);font-size:14px}.cmm button.on{background:var(--panel2);color:#fff}.cmm button:hover{color:#fff}
+.ctool .qt{margin-left:0}
+.chartpane.max{position:fixed!important;inset:0;z-index:75;border-radius:0!important;width:auto;height:auto}
+body.chartmax #tour{z-index:300}
+.center.cmin .chartpane{flex:0 0 34%!important;min-height:200px}.center.cmin .trades{flex:1 1 0!important}
+@media(max-width:900px){.cmm button[data-s=min]{display:none}}
+/* ---- drawing tools: labelled ---- */
+.dtools{max-height:calc(100% - 58px);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;top:48px!important;border-radius:14px!important;padding:6px!important;background:rgba(10,17,30,.92)!important}
+.dtools::-webkit-scrollbar{display:none}
+.dtools .tip{display:none!important}
+.dtools button{width:34px!important;height:34px!important;border-radius:9px!important;flex-shrink:0}
+.dtools em{display:none}.dtools .lb{display:none}
+.dtools hr{margin:4px 5px!important;border-color:var(--line2)!important}
+.dtools .dtw{color:#8fb4ff}
+.dtools.wide{padding:6px 8px!important}.dtools.wide button{width:100%!important;min-width:176px;justify-content:flex-start!important;gap:10px;padding:0 10px}
+.dtools.wide .lb{display:flex;align-items:center;gap:8px;flex:1;font:600 12px var(--ui);color:#cfd8e8;white-space:nowrap}.dtools.wide .lb kbd{margin-left:auto;font:700 10px var(--mono);color:var(--dim);border:1px solid var(--line2);border-radius:4px;padding:1px 5px}
+.dtools.wide em{display:block;font:700 9.5px var(--mono);letter-spacing:1.2px;color:var(--blue);padding:2px 4px 0}.dtools.wide hr{display:none}
+.dtools button.on{background:linear-gradient(135deg,rgba(59,140,255,.3),rgba(124,108,255,.3))!important;color:#fff!important}
+/* ---- more identity ---- */
+.topbar{position:relative}.topbar:after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),var(--vio),var(--cy),transparent);background-size:200% 100%;animation:fxl 7s linear infinite;opacity:.8}
+@keyframes fxl{to{background-position:200% 0}}
+.brand img{box-shadow:0 0 0 1px rgba(124,108,255,.5),0 0 22px rgba(59,140,255,.45)!important;animation:fxg 4s ease-in-out infinite}@keyframes fxg{50%{box-shadow:0 0 0 1px rgba(124,108,255,.8),0 0 34px rgba(124,108,255,.6)}}
+.chartpane{box-shadow:0 0 0 1px rgba(124,108,255,.12),0 24px 60px -30px #000!important}
+@media(prefers-reduced-motion:reduce){.topbar:after,.brand img{animation:none}}
+@media(max-width:1700px){.dock .lc{display:none!important}}@media(max-width:1560px){.dock .rr{display:none!important}}
+.dock .xb button{white-space:nowrap}
+@media(min-width:901px){.trades{flex:0 0 29%!important;min-height:190px!important}.dock .xb button{padding:0 10px}.dock .tb{min-width:108px}}
