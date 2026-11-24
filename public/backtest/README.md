@@ -8,7 +8,7 @@ Static site (no build). Files: `index.html` (landing), `app.html` (terminal), `j
 A shared Supabase market library is now seeded with 56 public real-market datasets (96,263 candles total at 2026-11-24) across Crypto, Forex, Metals, Indices and Stocks. Starter coverage includes 1m/5m/15m/1h/4h/1d for core instruments, 5 years of daily data for 30 symbols, and additional 4h history for key instruments. The app loads these through read-only RLS policies.  Import CSV on *Market Data* (MT4/MT5, Dukascopy, Binance, TradingView…). Crypto can be downloaded from Binance public data. Forex, Gold, Indices and Stocks use the deployed free Yahoo Finance fallback through the Supabase `market-data` Edge Function. Yahoo is unofficial and may rate-limit or change; free history is limited to about 5 days for 1m, 31 days for 5m/15m/30m, 730 days for 1h/4h and 1826 days for 1d. Import CSV for older intraday history.
 
 ## Cloud mode (Supabase)
-1. On a DEV Supabase project run `supabase/001_backtesting.sql` (tables + RLS; rollback SQL in comments). Production only after you approve.
+1. The connected FX WOLVER Supabase project has the backtest tables, user-owned RLS policies, shared read-only market library and `market-data` Edge Function already provisioned. For a fresh project, apply the schema migration files under `supabase/`.
 2. `js/config.js` is already configured with the project URL and a public publishable key. Never put a service-role/secret key in browser code.
 3. The `market-data` Edge Function is deployed with JWT verification enabled and uses the free Yahoo Finance fallback; no Twelve Data API key is needed for that fallback. The optional `ai-coach` function still needs an Anthropic API key before it can be deployed and used.
 
@@ -22,7 +22,7 @@ Market orders fill at candle close ± spread/slippage; pending orders fill when 
 `node tests/core.test.js`; e2e: Playwright scripts in `tests/` (need `eurusd_m5.csv` generated via `fixture.js` — synthetic, test only).
 
 ## Known limitations
-Cloud schema and user-owned RLS policies are installed; the `market-data` Edge Function is deployed, but a signed-in browser end-to-end market-data test is still pending. Yahoo is an unofficial upstream and free-history limits apply; older intraday history needs CSV/provider data. Account currency USD only; chart times UTC; mobile workspace is compact; no historical datasets are bundled, and no real-market backtest results are claimed.
+Cloud schema and user-owned RLS policies are installed; the `market-data` Edge Function is deployed, but a signed-in browser end-to-end market-data test is still pending. Yahoo is an unofficial upstream and free-history limits apply; older intraday history needs CSV/provider data. Account currency USD only; chart times UTC; mobile workspace is compact; the static ZIP does not bundle the shared candles (they live in Supabase); the current starter library contains real historical candles but no user backtests/trades are pre-created.
 
 ## Login flow
 Landing page (`index.html`) has a login / create-account card. With `SUPABASE_ANON_KEY` set in `js/config.js` it signs in via Supabase and goes straight to `app.html#/bt/workspace`. Without a key the site runs in local mode (data stays in the browser) and the card shows "Enter terminal".
